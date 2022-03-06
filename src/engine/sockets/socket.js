@@ -5,52 +5,23 @@ const storageMap = new Map();
 class Socket {
   constructor(ip, port, type) {
     this.address = "ws://" + ip + ":" + port;
-    // + ip + ":" + port;
     console.log(this.address);
-    // if (type == "Host") {
-    // } else {
-    this.ws = new WebSocket(this.address);
+  }
 
-    // }
+  connect() {
+    return new Promise((resolve, reject) => {
+      console.log("Trying to connect...");
+      this.ws = new WebSocket(this.address);
+      this.ws.onopen = () => {
+        console.log("Found a connection");
+        this.init();
+        resolve(this.ws);
+      };
 
-    // this.ws.onopen = function (e) {
-    //   //   alert("[open] Connection established");
-    //   //   alert("Sending to server");
-    //   this.ws.send("Hello");
-    //   console.log("sent msg to server");
-    // };
-
-    this.ws.addEventListener("open", () => {
-      //   this.ws.send(
-      //     JSON.stringify({
-      //       x: 254,
-      //       y: 30,
-      //     })
-      //   );
-      console.log("FR?");
+      this.ws.onerror = (error) => {
+        reject(error);
+      };
     });
-
-    this.ws.onmessage = function (event) {
-      const msg = JSON.parse(event.data);
-      console.log("Message " + msg);
-      storageMap.set("key", msg);
-    };
-
-    this.ws.onclose = function (event) {
-      //   if (event.wasClean) {
-      //     alert(
-      //       `[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`
-      //     );
-      //   } else {
-      //     // e.g. server process killed or network down
-      //     // event.code is usually 1006 in this case
-      //     alert("[close] Connection died");
-      //   }
-    };
-
-    // this.ws.onerror = function (error) {
-    //   alert(`[error] ${error.message}`);
-    // this.init();
   }
 
   printMap() {
@@ -58,7 +29,18 @@ class Socket {
       console.log(key, value);
     }
   }
-  init() {}
+
+  init() {
+    console.log("Initializing...");
+
+    this.ws.onclose = (event) => {
+      console.log("Closed " + event);
+    };
+
+    this.ws.onerror = (error) => {
+      console.log(`[error] ${error.message}`);
+    };
+  }
 
   update() {}
 
@@ -67,12 +49,20 @@ class Socket {
   }
 
   recieveInfo() {
-    for (let [key, value] of storageMap.entries()) {
-      console.log("Value ", value);
+    for (let value of storageMap.values()) {
       return value;
     }
-    // console.log("KEYYY? " + storageMap.get("key"));
-    // return storageMap.get("key");
+  }
+
+  message() {
+    return new Promise((resolve, reject) => {
+      this.ws.onmessage = (event) => {
+        const msg = JSON.parse(event.data);
+        // console.log("Message recieved " + msg);
+        storageMap.set("key", msg);
+        resolve(event);
+      };
+    });
   }
 }
 

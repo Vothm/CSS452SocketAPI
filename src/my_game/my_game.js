@@ -41,20 +41,10 @@ class MyGame extends engine.Scene {
     this.drawSet.push(this.instructions);
     this.drawSet.push(this.mMsg);
 
-    this.socketTest = new engine.Socket("server.vonce.me", "80", "Client");
-    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-    await sleep(1000);
-    this.socketTest.sendInfo("Hello World");
-
-    await sleep(2000);
-    // this.socketTest.recieveInfo();
+    this.socketTest = new engine.Socket("localhost", "3000", "Client");
+    await this.socketTest.connect();
+    await this.socketTest.message();
     let msg = this.socketTest.recieveInfo();
-    console.log("MSG RECIEVED " + msg);
-    this.mMsg.setText(msg);
-    await sleep(1000);
-    this.socketTest.sendInfo("Change text");
-    await sleep(1000);
-    msg = this.socketTest.recieveInfo();
     console.log("MSG RECIEVED " + msg);
     this.mMsg.setText(msg);
   }
@@ -73,14 +63,15 @@ class MyGame extends engine.Scene {
 
   // The Update function, updates the application state. Make sure to _NOT_ draw
   // anything from this function!
-  update() {
+  async update() {
     // this.socketTest.printMap();
-    if (engine.input.isKeyPressed(engine.input.keys.S)) {
+    if (engine.input.isKeyClicked(engine.input.keys.S)) {
       this.socketTest.sendInfo("Hello World from S");
     }
-    if (engine.input.isKeyPressed(engine.input.keys.R)) {
+    if (engine.input.isKeyClicked(engine.input.keys.R)) {
       this.socketTest.sendInfo("Custom text from R");
     }
+
     this.mMsg.setText(this.socketTest.recieveInfo());
   }
 }
