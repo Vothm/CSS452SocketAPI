@@ -42,8 +42,8 @@ class MyGame extends engine.Scene {
     this.drawSet.push(this.mMsg);
 
     this.socketTest = new engine.Socket(
-      "wicked-wombat-87.loca.lt",
-      "51400",
+      "neat-treefrog-15.loca.lt",
+      "8000",
       "Client"
     );
     const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
