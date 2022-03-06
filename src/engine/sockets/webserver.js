@@ -1,5 +1,5 @@
 const WebSocket = require("ws");
-const wss = new WebSocket.Server({ port: 8080 });
+const wss = new WebSocket.Server({ port: 51400 });
 let sockets = [];
 
 const clients = new Map();
