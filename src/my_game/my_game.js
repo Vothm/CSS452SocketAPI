@@ -28,7 +28,7 @@ class MyGame extends engine.Scene {
 
     this.mMsg = new engine.FontRenderable("This is a text renderable");
     this.mMsg.setColor([0, 0, 0, 1]);
-    this.mMsg.getXform().setPosition(0, 10);
+    this.mMsg.getXform().setPosition(0, 0);
     this.mMsg.setTextHeight(5);
 
     this.instructions = new engine.FontRenderable(
@@ -56,7 +56,7 @@ class MyGame extends engine.Scene {
     console.log("MSG RECIEVED " + msg);
     this.mMsg.setText(msg);
     await sleep(1000);
-    this.socketTest.sendInfo("Change me!");
+    this.socketTest.sendInfo("Change text");
     await sleep(1000);
     msg = this.socketTest.recieveInfo();
     console.log("MSG RECIEVED " + msg);
