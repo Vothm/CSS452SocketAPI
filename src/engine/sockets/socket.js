@@ -8,20 +8,32 @@ class Socket {
     console.log(this.address);
   }
 
-  connect() {
+  connectPromise() {
     return new Promise((resolve, reject) => {
       console.log("Trying to connect...");
-      this.ws = new WebSocket(this.address);
-      this.ws.onopen = () => {
-        console.log("Found a connection");
-        this.init();
-        resolve(this.ws);
-      };
+      setTimeout(() => {
+        this.ws = new WebSocket(this.address);
+        this.ws.onopen = () => {
+          console.log("Found a connection");
+          this.ws.send(JSON.stringify("Connected"));
+          this.init();
+          resolve(this.ws);
+        };
 
-      this.ws.onerror = (error) => {
-        reject(error);
-      };
+        this.ws.onerror = async (error) => {
+          await this.connectPromise();
+        };
+      }, 1000);
     });
+  }
+
+  connect() {
+    console.log("Trying to connect...");
+    this.ws = new WebSocket(this.address);
+    this.ws.onopen = () => {
+      console.log("Found a connection");
+      this.init();
+    };
   }
 
   printMap() {
@@ -33,16 +45,20 @@ class Socket {
   init() {
     console.log("Initializing...");
 
-    this.ws.onclose = (event) => {
+    this.ws.onclose = async (event) => {
       console.log("Closed " + event);
+      await this.connectPromise();
     };
 
     this.ws.onerror = (error) => {
       console.log(`[error] ${error.message}`);
     };
+    this.ws.onmessage = (event) => {
+      const msg = JSON.parse(event.data);
+      // console.log("Message recieved " + msg);
+      storageMap.set("key", msg);
+    };
   }
-
-  update() {}
 
   sendInfo(data) {
     this.ws.send(JSON.stringify(data));
@@ -54,8 +70,18 @@ class Socket {
     }
   }
 
-  message() {
+  setOnMessage() {
+    this.ws.onmessage = null;
+    this.ws.onmessage = (event) => {
+      const msg = JSON.parse(event.data);
+      // console.log("Message recieved " + msg);
+      storageMap.set("key", msg);
+    };
+  }
+
+  setAwaitMessage() {
     return new Promise((resolve, reject) => {
+      this.ws.onmessage = null;
       this.ws.onmessage = (event) => {
         const msg = JSON.parse(event.data);
         // console.log("Message recieved " + msg);

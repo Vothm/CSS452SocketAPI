@@ -8,11 +8,8 @@ class MyGame extends engine.Scene {
 
     // The camera to view the scene
     this.mCamera = null;
-
     this.mMsg = null;
-
     this.socketTest = null;
-
     this.drawSet = [];
   }
 
@@ -42,11 +39,12 @@ class MyGame extends engine.Scene {
     this.drawSet.push(this.mMsg);
 
     this.socketTest = new engine.Socket("localhost", "3000", "Client");
-    await this.socketTest.connect();
-    await this.socketTest.message();
+    await this.socketTest.connectPromise();
+    await this.socketTest.setAwaitMessage();
     let msg = this.socketTest.recieveInfo();
     console.log("MSG RECIEVED " + msg);
     this.mMsg.setText(msg);
+    this.socketTest.setOnMessage();
   }
 
   // This is the draw function, make sure to setup proper drawing environment, and more
@@ -65,6 +63,7 @@ class MyGame extends engine.Scene {
   // anything from this function!
   async update() {
     // this.socketTest.printMap();
+    let msg = this.socketTest.recieveInfo();
     if (engine.input.isKeyClicked(engine.input.keys.S)) {
       this.socketTest.sendInfo("Hello World from S");
     }
@@ -72,7 +71,9 @@ class MyGame extends engine.Scene {
       this.socketTest.sendInfo("Custom text from R");
     }
 
-    this.mMsg.setText(this.socketTest.recieveInfo());
+    if (msg) {
+      this.mMsg.setText(this.socketTest.recieveInfo());
+    }
   }
 }
 
