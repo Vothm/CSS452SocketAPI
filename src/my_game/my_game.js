@@ -38,7 +38,7 @@ class MyGame extends engine.Scene {
     this.drawSet.push(this.instructions);
     this.drawSet.push(this.mMsg);
 
-    this.socketTest = new engine.Socket("localhost", "3000", "Client");
+    this.socketTest = new engine.Socket("server.vonce.me", "80", "Client");
     await this.socketTest.connectPromise();
     await this.socketTest.setAwaitMessage();
     let msg = this.socketTest.recieveInfo();
