@@ -1,10 +1,10 @@
 /*
  * File: index.js
- *  
+ *
  * serves as central export of the entire engine
- * client programs can simply import this file 
+ * client programs can simply import this file
  * for all symbols defined in the engine
- * 
+ *
  */
 "use strict";
 
@@ -31,7 +31,7 @@ import ShakeVec2 from "./utils/shake_vec2.js";
 // camera and related supports
 import Camera from "./cameras/camera.js";
 
-// renderables 
+// renderables
 import Renderable from "./renderables/renderable.js";
 import TextureRenderable from "./renderables/texture_renderable.js";
 import SpriteRenderable from "./renderables/sprite_renderable.js";
@@ -51,59 +51,82 @@ import * as vertexBuffer from "./core/vertex_buffer.js";
 import * as shaderResources from "./core/shader_resources.js";
 import * as loop from "./core/loop.js";
 
-import Socket from "./sockets/socket.js";
+import SocketClient from "./sockets/client.js";
+import SocketHost from "./sockets/host.js";
 
 // general engine utilities
 function init(htmlCanvasID) {
-    glSys.init(htmlCanvasID);
-    vertexBuffer.init();
-    input.init(htmlCanvasID);
-    audio.init();
-    shaderResources.init();
-    defaultResources.init();
+  glSys.init(htmlCanvasID);
+  vertexBuffer.init();
+  input.init(htmlCanvasID);
+  audio.init();
+  shaderResources.init();
+  defaultResources.init();
 }
 
 function cleanUp() {
-    loop.cleanUp();
-    shaderResources.cleanUp();
-    defaultResources.cleanUp();
-    audio.cleanUp();
-    input.cleanUp();
-    vertexBuffer.cleanUp();
-    glSys.cleanUp();
+  loop.cleanUp();
+  shaderResources.cleanUp();
+  defaultResources.cleanUp();
+  audio.cleanUp();
+  input.cleanUp();
+  vertexBuffer.cleanUp();
+  glSys.cleanUp();
 }
 
 function clearCanvas(color) {
-    let gl = glSys.get();
-    gl.clearColor(color[0], color[1], color[2], color[3]);  // set the color to be cleared
-    gl.clear(gl.COLOR_BUFFER_BIT);      // clear to the color previously set
+  let gl = glSys.get();
+  gl.clearColor(color[0], color[1], color[2], color[3]); // set the color to be cleared
+  gl.clear(gl.COLOR_BUFFER_BIT); // clear to the color previously set
 }
-
 
 export default {
-    // resource support
-    audio, text, xml, texture, font, defaultResources,
+  // resource support
+  audio,
+  text,
+  xml,
+  texture,
+  font,
+  defaultResources,
 
-    // input support
-    input,
+  // input support
+  input,
 
-    // general utils 
-    Lerp, LerpVec2, Oscillate, Shake, ShakeVec2,
+  // general utils
+  Lerp,
+  LerpVec2,
+  Oscillate,
+  Shake,
+  ShakeVec2,
 
-    // Util classes
-    Camera, Scene, Transform, BoundingBox,  
-     
-    // Renderables
-    Renderable, TextureRenderable, SpriteRenderable, SpriteAnimateRenderable, FontRenderable, LineRenderable,
+  // Util classes
+  Camera,
+  Scene,
+  Transform,
+  BoundingBox,
 
-    // Game Objects
-    GameObject, GameObjectSet,
+  // Renderables
+  Renderable,
+  TextureRenderable,
+  SpriteRenderable,
+  SpriteAnimateRenderable,
+  FontRenderable,
+  LineRenderable,
 
-    Socket,
+  // Game Objects
+  GameObject,
+  GameObjectSet,
 
-    // constants
-    eTexCoordArrayIndex, eAnimationType, eBoundCollideStatus,
+  SocketClient,
+  SocketHost,
 
-    // functions
-    init, cleanUp, clearCanvas
-}
+  // constants
+  eTexCoordArrayIndex,
+  eAnimationType,
+  eBoundCollideStatus,
+
+  // functions
+  init,
+  cleanUp,
+  clearCanvas,
+};

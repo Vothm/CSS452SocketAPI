@@ -23,28 +23,97 @@ class MyGame extends engine.Scene {
     this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
     // sets the background to gray
 
-    this.mMsg = new engine.FontRenderable("This is a text renderable");
-    this.mMsg.setColor([0, 0, 0, 1]);
-    this.mMsg.getXform().setPosition(0, 0);
-    this.mMsg.setTextHeight(5);
+    let ipBox = document.createElement("INPUT");
+    document.body.appendChild(ipBox);
+    ipBox.setAttribute("type", "text");
+    ipBox.setAttribute("value", "localhost");
+    ipBox.style.position = "absolute";
+    ipBox.style.height = "50px";
+    ipBox.style.fontSize = "25pt";
+    ipBox.onclick = () => {
+      ipBox.value = "";
+      ipBox.onclick = null;
+    };
 
-    this.instructions = new engine.FontRenderable(
-      "Press S or R to change text"
-    );
-    this.instructions.setColor([0, 0, 0, 1]);
-    this.instructions.getXform().setPosition(0, -5);
-    this.instructions.setTextHeight(5);
+    let portBox = document.createElement("INPUT");
+    document.body.appendChild(portBox);
+    portBox.setAttribute("type", "text");
+    portBox.setAttribute("value", "3000");
+    portBox.style.position = "absolute";
+    portBox.style.top = "80px";
+    portBox.style.height = "50px";
+    portBox.style.fontSize = "25pt";
+    portBox.onclick = () => {
+      portBox.value = "";
+      portBox.onclick = null;
+    };
 
-    this.drawSet.push(this.instructions);
-    this.drawSet.push(this.mMsg);
+    let connectBtn = document.createElement("BUTTON");
+    document.body.appendChild(connectBtn);
+    connectBtn.style.fontSize = "25pt";
+    connectBtn.textContent = "Connect";
+    connectBtn.style.height = "50px";
+    connectBtn.style.width = "200px";
 
-    this.socketTest = new engine.Socket("server.vonce.me", "80", "Client");
-    await this.socketTest.connectPromise();
-    await this.socketTest.setAwaitMessage();
-    let msg = this.socketTest.recieveInfo();
-    console.log("MSG RECIEVED " + msg);
-    this.mMsg.setText(msg);
-    this.socketTest.setOnMessage();
+    let hostBtn = document.createElement("BUTTON");
+    document.body.appendChild(hostBtn);
+    hostBtn.style.fontSize = "25pt";
+    hostBtn.textContent = "Host";
+    hostBtn.style.height = "50px";
+    hostBtn.style.width = "200px";
+    hostBtn.style.border = "none";
+
+    let clientBtn = document.createElement("BUTTON");
+    document.body.appendChild(clientBtn);
+    clientBtn.style.border = "1px solid red";
+    clientBtn.style.fontSize = "25pt";
+    clientBtn.textContent = "Client";
+    clientBtn.style.height = "50px";
+    clientBtn.style.width = "200px";
+    clientBtn.focus();
+
+    let lastclick = "client";
+    hostBtn.onclick = () => {
+      hostBtn.style.border = "1px solid red";
+      hostBtn.focus();
+      clientBtn.style.border = "none";
+      clientBtn.blur();
+
+      lastclick = hostBtn.textContent.toLowerCase();
+    };
+
+    clientBtn.onclick = () => {
+      clientBtn.style.border = "1px solid red";
+      clientBtn.focus();
+      hostBtn.style.border = "none";
+      hostBtn.blur();
+
+      lastclick = clientBtn.textContent.toLowerCase();
+    };
+
+    connectBtn.onclick = async () => {
+      // ------------------------------------------
+      if (ipBox.value === "Input IP" || portBox.value === "Input port") {
+        setTimeout(() => {
+          alert("Please input ip and port");
+        });
+      } else {
+        console.log(lastclick);
+        if (this.socketTest) {
+          this.socketTest.close();
+          this.socketTest = null;
+        }
+        if (lastclick === "client") {
+          this.socketTest = new engine.SocketClient(ipBox.value, portBox.value);
+          await this.socketTest.connectPromise();
+        } else if (lastclick === "host") {
+          this.socketTest = new engine.SocketHost(ipBox.value, portBox.value);
+          await this.socketTest.connectPromise();
+        }
+        // Two most required lines, the function this is running on has to be async
+        // -----------------------------------------
+      }
+    };
   }
 
   // This is the draw function, make sure to setup proper drawing environment, and more
@@ -61,20 +130,7 @@ class MyGame extends engine.Scene {
 
   // The Update function, updates the application state. Make sure to _NOT_ draw
   // anything from this function!
-  async update() {
-    // this.socketTest.printMap();
-    let msg = this.socketTest.recieveInfo();
-    if (engine.input.isKeyClicked(engine.input.keys.S)) {
-      this.socketTest.sendInfo("Hello World from S");
-    }
-    if (engine.input.isKeyClicked(engine.input.keys.R)) {
-      this.socketTest.sendInfo("Custom text from R");
-    }
-
-    if (msg) {
-      this.mMsg.setText(this.socketTest.recieveInfo());
-    }
-  }
+  async update() {}
 }
 
 window.onload = function () {

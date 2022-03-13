@@ -1,10 +1,17 @@
 "use strict";
 
-const storageMap = new Map();
-
 class Socket {
   constructor(ip, port, type) {
+    // Let's store ID an Data as key value pair
+    // storage map keeps the latest data
+    // of peers
+    this.storageMap = new Map();
     this.address = "ws://" + ip + ":" + port;
+    this.message = {
+      type: null,
+      data: null,
+      id: null,
+    };
     console.log(this.address);
   }
 
@@ -15,8 +22,8 @@ class Socket {
         this.ws = new WebSocket(this.address);
         this.ws.onopen = () => {
           console.log("Found a connection");
-          this.ws.send(JSON.stringify("Connected"));
           this.init();
+          this.sendInfo("init");
           resolve(this.ws);
         };
 
@@ -37,7 +44,7 @@ class Socket {
   }
 
   printMap() {
-    for (let [key, value] of storageMap.entries()) {
+    for (let [key, value] of this.storageMap.entries()) {
       console.log(key, value);
     }
   }
@@ -47,35 +54,40 @@ class Socket {
 
     this.ws.onclose = async (event) => {
       console.log("Closed " + event);
+    };
+
+    this.ws.onerror = async (error) => {
+      console.log(`[error] ${error.message}`);
       await this.connectPromise();
     };
 
-    this.ws.onerror = (error) => {
-      console.log(`[error] ${error.message}`);
-    };
-    this.ws.onmessage = (event) => {
-      const msg = JSON.parse(event.data);
-      // console.log("Message recieved " + msg);
-      storageMap.set("key", msg);
-    };
+    this.setOnMessage();
   }
-
+  setOnMessage() {
+    this.ws.onmessage = null;
+    this.setMessage();
+  }
   sendInfo(data) {
-    this.ws.send(JSON.stringify(data));
+    this.message.data = data;
+    this.ws.send(JSON.stringify(this.message));
   }
 
   recieveInfo() {
-    for (let value of storageMap.values()) {
+    for (let value of this.storageMap.values()) {
       return value;
     }
   }
 
-  setOnMessage() {
-    this.ws.onmessage = null;
+  setMessage() {
     this.ws.onmessage = (event) => {
       const msg = JSON.parse(event.data);
       // console.log("Message recieved " + msg);
-      storageMap.set("key", msg);
+      if (msg.data === "init") {
+        this.message.id = msg.id;
+        console.log(this.message);
+      }
+
+      this.storageMap.set("key", msg);
     };
   }
 
@@ -85,10 +97,14 @@ class Socket {
       this.ws.onmessage = (event) => {
         const msg = JSON.parse(event.data);
         // console.log("Message recieved " + msg);
-        storageMap.set("key", msg);
+        this.storageMap.set("key", msg);
         resolve(event);
       };
     });
+  }
+
+  close() {
+    this.ws.close();
   }
 }
 
