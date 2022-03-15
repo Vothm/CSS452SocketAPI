@@ -265,12 +265,10 @@ class MyGame extends engine.Scene {
         }
       }
     }
-
     if (engine.input.isKeyClicked(engine.input.keys.P)) {
       this.gameManager.reset();
       this.gameManager.recreateGameObjects();
       this.socket.sendInfo(this.gameManager.gameState);
-      this.socket.message.canMove = true;
     }
 
     //this.socket.message.data = this.gameManager.gameState;
@@ -290,32 +288,22 @@ class MyGame extends engine.Scene {
 
     //this.socket.message.id
 
-    for (let [key, value] of this.socket.storageMap.entries()) {
-      //console.log(value);
-      if (value.tag == "myTag") {
-        console.log("rewriting with server data");
-        this.gameManager.gameState = value.data;
-        //console.log(this.gameManager.gameState);
-        this.gameManager.recreateGameObjects();
+    if (!newMove && this.socket.message.canMove === true) {
+      for (let [key, value] of this.socket.storageMap.entries()) {
+        //console.log(value);
+        if (
+          key != this.socket.message.id &&
+          value.tag == "myTag" &&
+          value.data != "not real data"
+        ) {
+          console.log("rewriting with server data");
+          this.gameManager.gameState = value.data;
+          //console.log(this.gameManager.gameState);
+          this.gameManager.recreateGameObjects();
+          this.socket.sendInfo("not real data");
+        }
       }
     }
-
-    // if (!newMove && this.socket.message.canMove === true) {
-    //   for (let [key, value] of this.socket.storageMap.entries()) {
-    //     //console.log(value);
-    //     if (
-    //       key != this.socket.message.id &&
-    //       value.tag == "myTag" &&
-    //       value.data != "not real data"
-    //     ) {
-    //       console.log("rewriting with server data");
-    //       this.gameManager.gameState = value.data;
-    //       //console.log(this.gameManager.gameState);
-    //       this.gameManager.recreateGameObjects();
-    //       this.socket.sendInfo("not real data");
-    //     }
-    //   }
-    // }
     this.gameState = this.gameManager.analyzeGame();
 
     //console.log(this.gameManager.gameState);
