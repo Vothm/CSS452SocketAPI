@@ -277,6 +277,7 @@ class GameManager {
         }
       }
     }
+
   }
 
   update() {}

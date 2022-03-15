@@ -77,8 +77,6 @@ class MyGame extends engine.Scene {
     this.socket = new engine.SocketClient("server.vonce.me", "80");
     await this.socket.connectPromise();
 
-    this.socket.sendInfo(this.gameManager.gameState);
-
     /*
 
     this.socket = new engine.Socket("server.vonce.me", "80", "Client");
@@ -299,7 +297,7 @@ class MyGame extends engine.Scene {
       this.socket.message.canMove = true;
       this.socket.sendInfo(this.gameManager.gameState);
       this.gameManager.recreateGameObjects();
-
+      console.log(this.gameManager.drawSet);
       // this.socket.printMap();
     }
 
