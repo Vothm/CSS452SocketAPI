@@ -137,8 +137,8 @@ class MyGame extends engine.Scene {
     if (updatedValue) {
       if (updatedValue.data !== "init") {
         this.gameManager.gameState = updatedValue.data;
-        this.gameManager.currentTurn = updatedValue.prevTurn;
-        this.gameManager.prevTurn = updatedValue.turn;
+        // this.gameManager.currentTurn = updatedValue.prevTurn;
+        // this.gameManager.prevTurn = updatedValue.turn;
         this.socket.message.canMove = updatedValue.canMove;
       }
     }
