@@ -133,15 +133,6 @@ class MyGame extends engine.Scene {
     //     }
     //   }
 
-    let updatedValue = this.socket.storageMap.get("key");
-    if (updatedValue) {
-      if (updatedValue.data !== "init") {
-        this.gameManager.gameState = updatedValue.data;
-        this.socket.message.canMove = updatedValue.canMove;
-        this.gameManager.recreateGameObjects();
-      }
-    }
-
     if (engine.input.isKeyClicked(engine.input.keys.Q)) {
       if (this.gameManager.getTurn() == 1) {
         //player 1
@@ -295,16 +286,18 @@ class MyGame extends engine.Scene {
       console.log("move has been made");
       console.log(this.gameManager.gameState);
       this.socket.message.canMove = true;
+      this.socket.message.turn = this.gameManager.currentTurn;
       this.socket.sendInfo(this.gameManager.gameState);
       this.gameManager.recreateGameObjects();
       console.log(this.gameManager.drawSet);
       // this.socket.printMap();
     }
 
-    updatedValue = this.socket.storageMap.get("key");
+    let updatedValue = this.socket.storageMap.get("key");
     if (updatedValue) {
       if (updatedValue.data !== "init") {
         this.gameManager.gameState = updatedValue.data;
+        this.gameManager.currentTurn = updatedValue.turn;
         this.socket.message.canMove = updatedValue.canMove;
         this.gameManager.recreateGameObjects();
       }

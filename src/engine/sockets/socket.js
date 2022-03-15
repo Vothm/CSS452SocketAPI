@@ -13,6 +13,7 @@ class Socket {
       id: null,
       tag: "myTag",
       canMove: true,
+      turn: null,
     };
 
     this.message.canMove = true;
