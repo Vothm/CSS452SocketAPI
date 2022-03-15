@@ -96,7 +96,7 @@ class Socket {
         this.storageMap.set("key", msg);
       }
 
-      console.log("Recieved message " + this.storageMap.get("key"));
+      console.log("Recieved message " + msg);
     };
   }
 
