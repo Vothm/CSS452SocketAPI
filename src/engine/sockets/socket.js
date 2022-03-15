@@ -14,6 +14,7 @@ class Socket {
       tag: "myTag",
       canMove: true,
       turn: null,
+      prevTurn: null,
     };
 
     this.message.canMove = true;

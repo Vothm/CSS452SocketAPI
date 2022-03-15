@@ -138,6 +138,7 @@ class MyGame extends engine.Scene {
       if (updatedValue.data !== "init") {
         this.gameManager.gameState = updatedValue.data;
         this.gameManager.currentTurn = updatedValue.turn;
+        this.gameManager.prevTurn = updatedValue.prevTurn;
         this.socket.message.canMove = updatedValue.canMove;
       }
     }
