@@ -308,6 +308,7 @@ class MyGame extends engine.Scene {
         // this.gameManager.currentTurn = updatedValue.prevTurn;
         // this.gameManager.prevTurn = updatedValue.turn;
         this.socket.message.canMove = updatedValue.canMove;
+        this.gameManager.recreateGameObjects();
       }
     }
 
