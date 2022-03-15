@@ -11,7 +11,9 @@ class Socket {
       type: null,
       data: null,
       id: null,
+      pos: { x: null, y: null },
     };
+    this.currPlayer = null;
     console.log(this.address);
   }
 
@@ -84,10 +86,11 @@ class Socket {
       // console.log("Message recieved " + msg);
       if (msg.data === "init") {
         this.message.id = msg.id;
+        this.currPlayer = msg.id; // This is the id of the player (client)
         console.log(this.message);
       }
 
-      this.storageMap.set("key", msg);
+      this.storageMap.set(msg.id, msg);
     };
   }
 

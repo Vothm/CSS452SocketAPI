@@ -1,6 +1,7 @@
 "use strict"; // Operate in Strict mode such that variables must be declared before used!
 
 import engine from "../engine/index.js";
+import Hero from "./objects/hero.js";
 
 class MyGame extends engine.Scene {
   constructor() {
@@ -11,8 +12,20 @@ class MyGame extends engine.Scene {
     this.mMsg = null;
     this.socketTest = null;
     this.drawSet = [];
+    this.playerSet = [];
+
+    this.backgroundLoc = "assets/bg.png";
+    this.spriteSheet = "assets/SpriteSheet.png";
+  }
+  load() {
+    engine.texture.load(this.backgroundLoc);
+    engine.texture.load(this.spriteSheet);
   }
 
+  unload() {
+    engine.texture.unload(this.backgroundLoc);
+    engine.texture.unload(this.spriteSheet);
+  }
   async init() {
     // Step A: set up the cameras
     this.mCamera = new engine.Camera(
@@ -106,14 +119,22 @@ class MyGame extends engine.Scene {
         if (lastclick === "client") {
           this.socketTest = new engine.SocketClient(ipBox.value, portBox.value);
           await this.socketTest.connectPromise();
+          this.socketTest.printMap();
         } else if (lastclick === "host") {
           this.socketTest = new engine.SocketHost(ipBox.value, portBox.value);
           await this.socketTest.connectPromise();
+          this.socketTest.printMap();
         }
+
+
+
         // Two most required lines, the function this is running on has to be async
         // -----------------------------------------
       }
     };
+
+    await this.socketTest.setAwaitMessage();
+    console.log(this.socketTest.printMap());
   }
 
   // This is the draw function, make sure to setup proper drawing environment, and more
@@ -126,11 +147,21 @@ class MyGame extends engine.Scene {
     for (let obj of this.drawSet) {
       obj.draw(this.mCamera);
     }
+
+    for (let obj of this.playerSet) {
+      obj.draw(this.mCamera);
+    }
   }
 
   // The Update function, updates the application state. Make sure to _NOT_ draw
   // anything from this function!
-  async update() {}
+  async update() {
+    // See if there's anything at all
+    if (this.socketTest.storageMap) {
+      for (let [key, value] of this.socketTest.storageMap) {
+      }
+    }
+  }
 }
 
 window.onload = function () {
