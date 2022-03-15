@@ -301,7 +301,15 @@ class MyGame extends engine.Scene {
       // this.socket.printMap();
     }
 
-    this.socket.sendInfo(this.gameManager.gameState);
+    updatedValue = this.socket.storageMap.get("key");
+    if (updatedValue) {
+      if (updatedValue.data !== "init") {
+        this.gameManager.gameState = updatedValue.data;
+        // this.gameManager.currentTurn = updatedValue.prevTurn;
+        // this.gameManager.prevTurn = updatedValue.turn;
+        this.socket.message.canMove = updatedValue.canMove;
+      }
+    }
 
     //this.socket.printMap();
 
