@@ -92,7 +92,7 @@ class Socket {
         console.log(this.message);
       }
 
-      this.storageMap.set(msg.id, msg);
+      this.storageMap.set("key", msg);
     };
   }
 
