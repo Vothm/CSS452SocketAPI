@@ -12,8 +12,10 @@ class Socket {
       data: null,
       id: null,
       tag: "myTag",
-      canMove: true
+      canMove: true,
     };
+
+    this.message.canMove = true;
     console.log(this.address);
   }
 
@@ -70,8 +72,9 @@ class Socket {
     this.setMessage();
   }
   sendInfo(data) {
-    this.message.data = data;
-    this.ws.send(JSON.stringify(this.message));
+    let tempMsg = this.message;
+    tempMsg.data = data;
+    this.ws.send(JSON.stringify(tempMsg));
   }
 
   recieveInfo() {
