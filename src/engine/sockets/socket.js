@@ -11,6 +11,7 @@ class Socket {
       type: null,
       data: null,
       id: null,
+      tag: "BS"
     };
     console.log(this.address);
   }
@@ -86,7 +87,7 @@ class Socket {
         this.message.id = msg.id;
         console.log(this.message);
       }
-
+      if(msg.tag === "BS")
       this.storageMap.set("key", msg);
     };
   }
