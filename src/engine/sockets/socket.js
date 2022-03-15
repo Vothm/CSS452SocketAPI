@@ -92,9 +92,11 @@ class Socket {
       if (msg.data === "init") {
         this.message.id = msg.id;
         console.log(this.message);
+      } else {
+        this.storageMap.set("key", msg);
       }
 
-      this.storageMap.set("key", msg);
+      console.log("Recieved message " + msg);
     };
   }
 
