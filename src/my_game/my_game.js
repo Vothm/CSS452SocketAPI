@@ -302,6 +302,14 @@ class MyGame extends engine.Scene {
       // this.socket.printMap();
     }
 
+    updatedValue = this.socket.storageMap.get("key");
+    if (updatedValue) {
+      if (updatedValue.data !== "init") {
+        this.gameManager.gameState = updatedValue.data;
+        this.socket.message.canMove = updatedValue.canMove;
+        this.gameManager.recreateGameObjects();
+      }
+    }
     //this.socket.printMap();
 
     //this.socket.message.id
