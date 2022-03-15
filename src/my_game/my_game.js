@@ -119,14 +119,14 @@ class MyGame extends engine.Scene {
         if (lastclick === "client") {
           this.socketTest = new engine.SocketClient(ipBox.value, portBox.value);
           await this.socketTest.connectPromise();
+          this.socketTest.sendInfo("player");
           this.socketTest.printMap();
         } else if (lastclick === "host") {
           this.socketTest = new engine.SocketHost(ipBox.value, portBox.value);
           await this.socketTest.connectPromise();
+          this.socketTest.sendInfo("player");
           this.socketTest.printMap();
         }
-
-
 
         // Two most required lines, the function this is running on has to be async
         // -----------------------------------------
@@ -159,6 +159,10 @@ class MyGame extends engine.Scene {
     // See if there's anything at all
     if (this.socketTest.storageMap) {
       for (let [key, value] of this.socketTest.storageMap) {
+        if (value.data === "player") {
+          this.playerSet.push(new Hero(this.spriteSheet, this.spriteSheet));
+          this.socketTest.sendInfo("null");
+        }
       }
     }
   }
