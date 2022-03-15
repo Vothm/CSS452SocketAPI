@@ -19,14 +19,10 @@ class MyGameConnor extends engine.Scene {
     this.waiting = false;
     this.recieved = false;
     this.setup = 0;
+    this.datTag = 0;
 
-    this.dataTransfer = {
-      tag: null,
-      action: null,
-      data: null,
-      host: null
-    };
-    this.dataReciever = null;
+    
+    
 
     //import textures 
     this.gridImage = "assets/Grid.png";
@@ -229,8 +225,8 @@ class MyGameConnor extends engine.Scene {
           this.turnBool = false;
           this.waiting = true;
           this.lobbyNum = idBox.value;
-          this.dataTransfer.tag = idBox.value;
-          this.dataTransfer.host = this.HostBool;
+          this.datTag = idBox.value;
+          this.recieved = true;
           this.socketTest = new engine.SocketClient(ipBox.value, portBox.value);
           await this.socketTest.connectPromise();
           this.Connected = true;
@@ -239,8 +235,7 @@ class MyGameConnor extends engine.Scene {
           this.turnBool = true;
           this.waiting = false;
           this.lobbyNum = idBox.value;
-          this.dataTransfer.tag = idBox.value;
-          this.dataTransfer.host = this.HostBool;
+          this.datTag = idBox.value;
           this.socketTest = new engine.SocketHost(ipBox.value, portBox.value);
           await this.socketTest.connectPromise();
           this.Connected = true;
@@ -283,7 +278,16 @@ class MyGameConnor extends engine.Scene {
   // The Update function, updates the application state. Make sure to _NOT_ draw
   // anything from this function!
   async update() {
-    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+    var dataTransfer = {
+      tag: null,
+      action: null,
+      data: null,
+      host: null
+    };
+    var dataReciever = null;
+
+    dataTransfer.host = this.HostBool;
+    dataTransfer.tag = this.datTag;
 
     if(engine.input.isKeyClicked(engine.input.keys.X)){
       if(this.setup == 0){
@@ -329,6 +333,13 @@ class MyGameConnor extends engine.Scene {
     }
 
     this.selector.update();
+    
+    if(engine.input.isKeyClicked(engine.input.keys.B)){
+      console.log(this.recieved, this.turnBool);
+    }
+    if(engine.input.isKeyClicked(engine.input.keys.N)){
+      console.log(this.socketTest.recieveInfo());
+    }
 
     console.log(this.turnBool);
 
@@ -336,129 +347,87 @@ class MyGameConnor extends engine.Scene {
       if(this.turnBool == true){
 
         if(engine.input.isKeyClicked(engine.input.keys.Space)){
-          this.dataTransfer.data = vec2.fromValues(this.selector.getPos()[0]-200, this.selector.getPos()[1]);
-          this.dataTransfer.action = "shoot";
-          this.dataTransfer.host = this.HostBool;
+          dataTransfer.data = vec2.fromValues(this.selector.getPos()[0]-200, this.selector.getPos()[1]);
+          dataTransfer.action = 1;
+          dataTransfer.host = this.HostBool;
           this.turnBool = false;
           this.waiting = true;
           this.received = false;
-          this.socketTest.sendInfo(this.dataTransfer);
+          console.log("fired");
+          console.log(dataTransfer.action);
+          this.socketTest.sendInfo(dataTransfer);
+          console.log(dataTransfer.action);
+          console.log(dataTransfer);
           console.log("fired");
         }
       }
       else if(this.turnBool == false){
         
-        this.dataReciever = this.socketTest.recieveInfo();
+        dataReciever = this.socketTest.recieveInfo();
         //console.log(this.dataReciever);
         //console.log(this.dataReciever.tag == "BS", this.dataReciever.type != this.HostBool, this.dataReciever.data.host != this.HostBool);
-        if(this.dataReciever != null){
-          if(this.dataReciever.tag == "BS" && this.dataReciever.id != this.socketTest.message.id){
-            if(this.dataReciever.type != this.HostBool && this.dataReciever.data.host != this.HostBool){
-
-              if(this.dataReciever.data.action == "shoot"){
+        if(dataReciever != null){
+          if(dataReciever.tag === "BS" && dataReciever.id !== this.socketTest.message.id){
+            //if(this.dataReciever.type !== this.HostBool && this.dataReciever.data.host !== this.HostBool){
+              //console.log(this.dataReciever);
+              if(dataReciever.data.action == 1 && this.recieved == true){
                 console.log("within shoot");
-                console.log(this.dataReciever.data.data);
-                var temp = this.shipSet.checkHits(this.dataReciever.data.data[0], this.dataReciever.data.data[1]);
+                console.log(dataReciever.data);
+                console.log(dataReciever.data.data);
+                console.log("within shoot");
+                var temp = this.shipSet.checkHits(dataReciever.data.data[0], dataReciever.data.data[1]);
                 if(temp == 1){
                   this.turnBool = true;
                   console.log("shot hit");
-                  this.shotSet.createHit(this.dataReciever.data.data[0], this.dataReciever.data.data[1]);
-                  this.dataTransfer.action = "resultHit";
-                  this.dataTransfer.data = vec2.fromValues(this.dataReciever.data.data[0]+200, this.dataReciever.data.data[1]);
-                  this.socketTest.sendInfo(this.dataTransfer);
+                  this.shotSet.createHit(dataReciever.data.data[0], dataReciever.data.data[1]);
+                  dataTransfer.action = 2;
+                  dataTransfer.data = vec2.fromValues(dataReciever.data.data[0]+200, dataReciever.data.data[1]);
+                  this.socketTest.sendInfo(dataTransfer);
                 }
                 else if(temp == 2 || temp == 0){
                   this.turnBool = true;
                   console.log("shot missed");
-                  this.shotSet.createMiss(this.dataReciever.data.data[0], this.dataReciever.data.data[1]);
-                  this.dataTransfer.action = "resultMiss";
-                  this.dataTransfer.data = vec2.fromValues(this.dataReciever.data.data[0]+200, this.dataReciever.data.data[1]);
-                  this.socketTest.sendInfo(this.dataTransfer);
+                  this.shotSet.createMiss(dataReciever.data.data[0], dataReciever.data.data[1]);
+                  dataTransfer.action = 3;
+                  dataTransfer.data = vec2.fromValues(dataReciever.data.data[0]+200, dataReciever.data.data[1]);
+                  this.socketTest.sendInfo(dataTransfer);
                 }
 
               }
-              else if(this.dataReciever.data.action == "resultHit" && this.received != true){
+              else if(dataReciever.data.action == 2 && this.received != true){
                 console.log("hit");
-                this.shotSet.createHit(this.dataReciever.data.data[0], this.dataReciever.data.data[1]);
+                console.log(dataReciever.data);
+                console.log("hit");
+                this.shotSet.createHit(dataReciever.data.data[0], dataReciever.data.data[1]);
                 this.received = true;
               }
-              else if(this.dataReciever.data.action == "resultMiss" && this.received != true){
+              else if(dataReciever.data.action == 3 && this.received != true){
                 console.log("miss");
-                this.shotSet.createMiss(this.dataReciever.data.data[0], this.dataReciever.data.data[1]);
+                console.log(dataReciever.data);
+                console.log("miss");
+                this.shotSet.createMiss(dataReciever.data.data[0], dataReciever.data.data[1]);
                 this.received = true;
               }
-              else if(this.dataReciever.data.action == "winCondition"){
-                this.MsgVal.setText(this.dataReciever.data.data);
+              else if(dataReciever.data.action == 4){
+                this.MsgVal.setText(dataReciever.data.data);
+              }
+              else{
+
               }
 
-            }
+            //}
           }
         }
 
-        this.dataReciever = null;
       }
 
       if(this.shipSet.checkDead() == true){
-        this.dataTransfer.data = "You Won";
-        this.dataTransfer.action = "winCondition";
-        this.socketTest.sendInfo(this.dataTransfer);
+        dataTransfer.data = "You Won";
+        dataTransfer.action = 4;
+        this.socketTest.sendInfo(dataTransfer);
         this.MsgVal.setText("You Lost");
       }
-
-
-      /*console.log(this.waiting, this.socketTest.recieveInfo().lastMessage.tag == "BS", this.socketTest.recieveInfo().lastMessage.data.tag == this.lobbyNum, this.socketTest.recieveInfo().lastMessage.type != this.HostBool);
-      if(this.waiting && this.recieved == false && this.socketTest.recieveInfo().tag == "BS" && this.socketTest.recieveInfo().data.tag == this.lobbyNum && this.socketTest.recieveInfo().type != this.HostBool){ 
-        
-        this.dataTransfer = this.socketTest.recieveInfo().data;
-        console.log(this.dataTransfer);
-        console.log(this.socketTest.recieveInfo());
-
-        if(this.dataTransfer.action == "shoot"){
-
-          if(this.shipSet.checkHits(this.dataTransfer.data[0], this.dataTransfer.data[1]) == 1){
-            this.shotSet.createHit(this.dataTransfer.data[0], this.dataTransfer.data[1]);
-            this.dataTransfer.action = "result";
-            this.dataTransfer.data = "1";
-          }
-          else if(this.shipSet.checkHits(this.dataTransfer.data[0], this.dataTransfer.data[1]) == 2){
-            this.shotSet.createMiss(this.dataTransfer.data[0], this.dataTransfer.data[1]);
-            this.dataTransfer.action = "result";
-            this.dataTransfer.data = "2";
-          }
-
-          this.shipSet.update();
-
-          this.waiting = false;
-          this.turnBool = true;
-          this.socketTest.sendInfo(this.dataTransfer);
-        }
-        else if(this.dataTransfer.action == "result"){
-          this.recieved = true;
-
-          if(this.dataTransfer.data == "1"){
-            this.shotSet.createHit(this.selector.getPos()[0]+200, this.selector.getPos()[1]);
-          }
-          else if(this.dataTransfer.data == "2"){ 
-            this.shotSet.createMiss(this.selector.getPos()[0]+200, this.selector.getPos()[1]);
-          }
-        }
-      }
-      */
     }
-
-    
-
-    
-    /*for (let [key, value] of this.socketTest.storageMap.entries()) {
-              
-      if(key != this.socketTest.message.id && value.tag == "BS")
-      {
-        console.log(value);
-        this.dataReciever = value.data;
-        console.log(this.dataReciever);
-      }
-
-    }*/
 
   }
 }
