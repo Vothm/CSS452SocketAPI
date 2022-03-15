@@ -297,7 +297,6 @@ class MyGame extends engine.Scene {
       console.log("move has been made");
       console.log(this.gameManager.gameState);
       this.socket.message.canMove = true;
-      console.log(this.socket.message.canMove);
       this.socket.sendInfo(this.gameManager.gameState);
       // this.socket.printMap();
     }
