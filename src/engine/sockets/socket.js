@@ -79,6 +79,10 @@ class Socket {
     }
   }
 
+  recieveSpecifics(id){ 
+    return this.storageMap.get(id);
+  }
+
   setMessage() {
     this.ws.onmessage = (event) => {
       const msg = JSON.parse(event.data);
@@ -88,7 +92,7 @@ class Socket {
         console.log(this.message);
       }
       if(msg.tag === "BS")
-      this.storageMap.set("key", msg);
+      this.storageMap.set(this.message.id, msg);
     };
   }
 
@@ -98,7 +102,7 @@ class Socket {
       this.ws.onmessage = (event) => {
         const msg = JSON.parse(event.data);
         // console.log("Message recieved " + msg);
-        this.storageMap.set("key", msg);
+        this.storageMap.set(this.message.id, msg);
         resolve(event);
       };
     });

@@ -16,8 +16,8 @@ class MyGameConnor extends engine.Scene {
     this.lobbyNum = 0;
     this.HostBool = "";
     this.turnBool = false;
-    this.waiting = false;
-    this.recieved = false;
+    this.YourShot = false;
+    this.EnemyShot = false;
     this.setup = 0;
     this.datTag = 0;
 
@@ -223,19 +223,20 @@ class MyGameConnor extends engine.Scene {
         if (lastclick === "client") {
           this.HostBool = "client";
           this.turnBool = false;
-          this.waiting = true;
+          this.YourShot = false;
           this.lobbyNum = idBox.value;
           this.datTag = idBox.value;
-          this.recieved = true;
+          this.EnemyShot = true;
           this.socketTest = new engine.SocketClient(ipBox.value, portBox.value);
           await this.socketTest.connectPromise();
           this.Connected = true;
         } else if (lastclick === "host") {
           this.HostBool = "host";
           this.turnBool = true;
-          this.waiting = false;
+          this.YourShot = true;
           this.lobbyNum = idBox.value;
           this.datTag = idBox.value;
+          this.EnemyShot = false;
           this.socketTest = new engine.SocketHost(ipBox.value, portBox.value);
           await this.socketTest.connectPromise();
           this.Connected = true;
@@ -278,6 +279,8 @@ class MyGameConnor extends engine.Scene {
   // The Update function, updates the application state. Make sure to _NOT_ draw
   // anything from this function!
   async update() {
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
     var dataTransfer = {
       tag: null,
       action: null,
@@ -335,10 +338,15 @@ class MyGameConnor extends engine.Scene {
     this.selector.update();
     
     if(engine.input.isKeyClicked(engine.input.keys.B)){
-      console.log(this.recieved, this.turnBool);
+      console.log(this.EnemyShot, this.turnBool);
     }
     if(engine.input.isKeyClicked(engine.input.keys.N)){
       console.log(this.socketTest.recieveInfo());
+    }
+    if(engine.input.isKeyClicked(engine.input.keys.M)){
+      console.log("sent");
+      dataTransfer.action = 9;
+      this.socketTest.sendInfo(dataTransfer);
     }
 
     console.log(this.turnBool);
@@ -346,13 +354,13 @@ class MyGameConnor extends engine.Scene {
     if(this.Connected == true) {
       if(this.turnBool == true){
 
-        if(engine.input.isKeyClicked(engine.input.keys.Space)){
+        if(engine.input.isKeyClicked(engine.input.keys.Space) && this.turnBool == true){
           dataTransfer.data = vec2.fromValues(this.selector.getPos()[0]-200, this.selector.getPos()[1]);
           dataTransfer.action = 1;
           dataTransfer.host = this.HostBool;
           this.turnBool = false;
-          this.waiting = true;
-          this.received = false;
+          this.YourShot = true;
+          this.EnemyShot = false;
           console.log("fired");
           console.log(dataTransfer.action);
           this.socketTest.sendInfo(dataTransfer);
@@ -367,14 +375,16 @@ class MyGameConnor extends engine.Scene {
         //console.log(this.dataReciever);
         //console.log(this.dataReciever.tag == "BS", this.dataReciever.type != this.HostBool, this.dataReciever.data.host != this.HostBool);
         if(dataReciever != null){
-          if(dataReciever.tag === "BS" && dataReciever.id !== this.socketTest.message.id){
+          if(dataReciever.tag === "BS" && dataReciever.data.tag == this.lobbyNum && dataReciever.data.host != this.HostBool){
             //if(this.dataReciever.type !== this.HostBool && this.dataReciever.data.host !== this.HostBool){
               //console.log(this.dataReciever);
-              if(dataReciever.data.action == 1 && this.recieved == true){
+              if(dataReciever.data.action == 1 && this.EnemyShot == true){
                 console.log("within shoot");
                 console.log(dataReciever.data);
                 console.log(dataReciever.data.data);
                 console.log("within shoot");
+                this.EnemyShot = false;
+                this.YourShot = true;
                 var temp = this.shipSet.checkHits(dataReciever.data.data[0], dataReciever.data.data[1]);
                 if(temp == 1){
                   this.turnBool = true;
@@ -394,31 +404,47 @@ class MyGameConnor extends engine.Scene {
                 }
 
               }
-              else if(dataReciever.data.action == 2 && this.received != true){
+
+              if(dataReciever.data.action == 2 && this.YourShot == true){
                 console.log("hit");
                 console.log(dataReciever.data);
                 console.log("hit");
                 this.shotSet.createHit(dataReciever.data.data[0], dataReciever.data.data[1]);
-                this.received = true;
+                this.YourShot = false;
+                this.EnemyShot = true;
               }
-              else if(dataReciever.data.action == 3 && this.received != true){
+              
+              if(dataReciever.data.action == 3 && this.YourShot == true){
                 console.log("miss");
                 console.log(dataReciever.data);
                 console.log("miss");
                 this.shotSet.createMiss(dataReciever.data.data[0], dataReciever.data.data[1]);
-                this.received = true;
+                this.YourShot = false;
+                this.EnemyShot = true;
               }
-              else if(dataReciever.data.action == 4){
+              
+              if(dataReciever.data.action == 4){
                 this.MsgVal.setText(dataReciever.data.data);
               }
-              else{
 
-              }
+              
 
-            //}
           }
         }
 
+      }
+
+      if(dataReciever != null && dataReciever.data.action == 9){
+        if(this.HostBool == "host"){
+          this.turnBool = true;
+          this.YourShot = true;
+          this.EnemyShot = false;
+        }
+        else{
+          this.turnBool = false;
+          this.YourShot = false;
+          this.EnemyShot = true;
+        }
       }
 
       if(this.shipSet.checkDead() == true){
