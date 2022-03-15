@@ -301,7 +301,7 @@ class MyGame extends engine.Scene {
       // this.socket.printMap();
     }
 
-    this.socket.sendInfo(this.gameState);
+    this.socket.sendInfo(this.gameManager.gameState);
 
     //this.socket.printMap();
 
