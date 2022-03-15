@@ -298,6 +298,8 @@ class MyGame extends engine.Scene {
       console.log(this.gameManager.gameState);
       this.socket.message.canMove = true;
       this.socket.sendInfo(this.gameManager.gameState);
+      this.gameManager.recreateGameObjects();
+
       // this.socket.printMap();
     }
 
