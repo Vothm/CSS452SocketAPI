@@ -34,7 +34,7 @@ class Destroyer {
             this.mRenderComponent.getXform().setRotationInDegree(0);
             this.mRenderComponent.getXform().setPosition(x-10, y);
             for(var i = 0; i < 2; i++) {
-                this.locations.push(vec2.fromValues(x+15 - (10*i), y));
+                this.locations.push(vec2.fromValues(x+5 - (10*i), y));
                 this.health.push(true);
             }
         }

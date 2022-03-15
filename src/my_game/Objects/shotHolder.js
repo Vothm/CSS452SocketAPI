@@ -27,7 +27,9 @@ class ShotHolder{
         this.gridParts.push(Part);
     }
     createMiss(x,y){ 
-        var Part = new engine.SpriteRenderable(this.hitImage);
+        var Part = new engine.SpriteRenderable(this.missImage);
+        Part.getXform().setPosition(x, y);
+        Part.getXform().setSize(9, 9);
         this.gridParts.push(Part);
     }
 

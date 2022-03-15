@@ -330,6 +330,8 @@ class MyGameConnor extends engine.Scene {
 
     this.selector.update();
 
+    console.log(this.turnBool);
+
     if(this.Connected == true) {
       if(this.turnBool == true){
 
@@ -345,43 +347,43 @@ class MyGameConnor extends engine.Scene {
         }
       }
       else if(this.turnBool == false){
-        for (let [key, value] of this.socketTest.storageMap.entries()) {
-              
-          if(key != this.socketTest.message.id && value.tag == "BS")
-          {
-            console.log(value);
-            this.dataReciever = value.data;
-            console.log(this.dataReciever);
-          }
-
-        }
-        //this.dataReciever = this.socketTest.recieveInfo();
+        
+        this.dataReciever = this.socketTest.recieveInfo();
         //console.log(this.dataReciever);
+        //console.log(this.dataReciever.tag == "BS", this.dataReciever.type != this.HostBool, this.dataReciever.data.host != this.HostBool);
         if(this.dataReciever != null){
-          if(this.dataReciever.tag == "BS"){
+          if(this.dataReciever.tag == "BS" && this.dataReciever.id != this.socketTest.message.id){
             if(this.dataReciever.type != this.HostBool && this.dataReciever.data.host != this.HostBool){
 
               if(this.dataReciever.data.action == "shoot"){
+                console.log("within shoot");
+                console.log(this.dataReciever.data.data);
                 var temp = this.shipSet.checkHits(this.dataReciever.data.data[0], this.dataReciever.data.data[1]);
                 if(temp == 1){
+                  this.turnBool = true;
+                  console.log("shot hit");
                   this.shotSet.createHit(this.dataReciever.data.data[0], this.dataReciever.data.data[1]);
                   this.dataTransfer.action = "resultHit";
                   this.dataTransfer.data = vec2.fromValues(this.dataReciever.data.data[0]+200, this.dataReciever.data.data[1]);
                   this.socketTest.sendInfo(this.dataTransfer);
                 }
-                else if(temp == 2){
+                else if(temp == 2 || temp == 0){
+                  this.turnBool = true;
+                  console.log("shot missed");
                   this.shotSet.createMiss(this.dataReciever.data.data[0], this.dataReciever.data.data[1]);
                   this.dataTransfer.action = "resultMiss";
                   this.dataTransfer.data = vec2.fromValues(this.dataReciever.data.data[0]+200, this.dataReciever.data.data[1]);
                   this.socketTest.sendInfo(this.dataTransfer);
                 }
-                this.turnBool = true;
+
               }
               else if(this.dataReciever.data.action == "resultHit" && this.received != true){
+                console.log("hit");
                 this.shotSet.createHit(this.dataReciever.data.data[0], this.dataReciever.data.data[1]);
                 this.received = true;
               }
               else if(this.dataReciever.data.action == "resultMiss" && this.received != true){
+                console.log("miss");
                 this.shotSet.createMiss(this.dataReciever.data.data[0], this.dataReciever.data.data[1]);
                 this.received = true;
               }
@@ -446,20 +448,17 @@ class MyGameConnor extends engine.Scene {
 
     
 
-    //this.socket.message.id
-    //for (let [key, value] of this.socket.storageMap.entries()) {
-    //    
-    //  if(key != this.socket.message.id && value.lastMessage.tag == "BS")
-    //  {
-    //      console.log(value);
-    //      this.gameManager.gameState = value.lastMessage.data;
-    //      console.log(this.gameManager.gameState);
-    //      //qthis.gameManager.recreateGameObjects();
-    //  }
-    //}
-    //this.gameState = this.gameManager.analyzeGame();
-    //console.log(this.gameManager.currentTurn);
+    
+    /*for (let [key, value] of this.socketTest.storageMap.entries()) {
+              
+      if(key != this.socketTest.message.id && value.tag == "BS")
+      {
+        console.log(value);
+        this.dataReciever = value.data;
+        console.log(this.dataReciever);
+      }
 
+    }*/
 
   }
 }
