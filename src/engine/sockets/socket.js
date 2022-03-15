@@ -11,7 +11,8 @@ class Socket {
       type: null,
       data: null,
       id: null,
-      tag: "myTag"
+      tag: "myTag",
+      canMove: true
     };
     console.log(this.address);
   }

@@ -28,6 +28,7 @@ class MyGame extends engine.Scene {
     this.crossWinMessage = null;
 
     this.socket = null;
+
   }
 
   load() {
@@ -124,146 +125,149 @@ class MyGame extends engine.Scene {
   update() {
     //console.log("my key is " + this.socket.lastMessage.id);
 
-    if (engine.input.isKeyClicked(engine.input.keys.Q)) {
-      if (this.gameManager.getTurn() == 1) {
-        //player 1
-        if (this.gameManager.validateMove(0, 0)) {
-          this.gameManager.createCross(0, 0);
-          this.gameManager.swapTurn();
-        }
-      } else {
-        //player 2
-        if (this.gameManager.validateMove(0, 0)) {
-          this.gameManager.createCircle(0, 0);
-          this.gameManager.swapTurn();
-        }
-      }
-    }
-    if (engine.input.isKeyClicked(engine.input.keys.W)) {
-      if (this.gameManager.getTurn() == 1) {
-        //player 1
-        if (this.gameManager.validateMove(1, 0)) {
-          this.gameManager.createCross(1, 0);
-          this.gameManager.swapTurn();
-        }
-      } else {
-        //player 2
-        if (this.gameManager.validateMove(1, 0)) {
-          this.gameManager.createCircle(1, 0);
-          this.gameManager.swapTurn();
-        }
-      }
-    }
-    if (engine.input.isKeyClicked(engine.input.keys.E)) {
-      if (this.gameManager.getTurn() == 1) {
-        //player 1
-        if (this.gameManager.validateMove(2, 0)) {
-          this.gameManager.createCross(2, 0);
-          this.gameManager.swapTurn();
-        }
-      } else {
-        //player 2
-        if (this.gameManager.validateMove(2, 0)) {
-          this.gameManager.createCircle(2, 0);
-          this.gameManager.swapTurn();
-        }
-      }
-    }
-    if (engine.input.isKeyClicked(engine.input.keys.A)) {
-      if (this.gameManager.getTurn() == 1) {
-        //player 1
-        if (this.gameManager.validateMove(0, 1)) {
-          this.gameManager.createCross(0, 1);
-          this.gameManager.swapTurn();
-        }
-      } else {
-        //player 2
-        if (this.gameManager.validateMove(0, 1)) {
-          this.gameManager.createCircle(0, 1);
-          this.gameManager.swapTurn();
-        }
-      }
-    }
-    if (engine.input.isKeyClicked(engine.input.keys.S)) {
-      if (this.gameManager.getTurn() == 1) {
-        //player 1
-        if (this.gameManager.validateMove(1, 1)) {
-          this.gameManager.createCross(1, 1);
-          this.gameManager.swapTurn();
-        }
-      } else {
-        //player 2
-        if (this.gameManager.validateMove(1, 1)) {
-          this.gameManager.createCircle(1, 1);
-          this.gameManager.swapTurn();
-        }
-      }
-    }
-    if (engine.input.isKeyClicked(engine.input.keys.D)) {
-      if (this.gameManager.getTurn() == 1) {
-        //player 1
-        if (this.gameManager.validateMove(2, 1)) {
-          this.gameManager.createCross(2, 1);
-          this.gameManager.swapTurn();
-        }
-      } else {
-        //player 2
-        if (this.gameManager.validateMove(2, 1)) {
-          this.gameManager.createCircle(2, 1);
-          this.gameManager.swapTurn();
-        }
-      }
-    }
-    if (engine.input.isKeyClicked(engine.input.keys.Z)) {
-      if (this.gameManager.getTurn() == 1) {
-        //player 1
-        if (this.gameManager.validateMove(0, 2)) {
-          this.gameManager.createCross(0, 2);
-          this.gameManager.swapTurn();
-        }
-      } else {
-        //player 2
-        if (this.gameManager.validateMove(0, 2)) {
-          this.gameManager.createCircle(0, 2);
-          this.gameManager.swapTurn();
-        }
-      }
-    }
-    if (engine.input.isKeyClicked(engine.input.keys.X)) {
-      if (this.gameManager.getTurn() == 1) {
-        //player 1
-        if (this.gameManager.validateMove(1, 2)) {
-          this.gameManager.createCross(1, 2);
-          this.gameManager.swapTurn();
-        }
-      } else {
-        //player 2
-        if (this.gameManager.validateMove(1, 2)) {
-          this.gameManager.createCircle(1, 2);
-          this.gameManager.swapTurn();
-        }
-      }
-    }
-    if (engine.input.isKeyClicked(engine.input.keys.C)) {
-      if (this.gameManager.getTurn() == 1) {
-        //player 1
-        if (this.gameManager.validateMove(2, 2)) {
-          //console.log("turn before " + this.gameManager.currentTurn);
-          this.gameManager.createCross(2, 2);
-          this.gameManager.swapTurn();
-          //console.log("turn after " + this.gameManager.currentTurn);
-        }
-      } else {
-        //player 2
-        if (this.gameManager.validateMove(2, 2)) {
-          //console.log(this.gameManager.currentTurn);
-          this.gameManager.createCircle(2, 2);
-          this.gameManager.swapTurn();
-          //console.log(this.gameManager.currentTurn);
-        }
-      }
-    }
+    if(this.socket.message.canMove === true)
+    {
 
+        if (engine.input.isKeyClicked(engine.input.keys.Q)) {
+        if (this.gameManager.getTurn() == 1) {
+            //player 1
+            if (this.gameManager.validateMove(0, 0)) {
+            this.gameManager.createCross(0, 0);
+            this.gameManager.swapTurn();
+            }
+        } else {
+            //player 2
+            if (this.gameManager.validateMove(0, 0)) {
+            this.gameManager.createCircle(0, 0);
+            this.gameManager.swapTurn();
+            }
+        }
+        }
+        if (engine.input.isKeyClicked(engine.input.keys.W)) {
+        if (this.gameManager.getTurn() == 1) {
+            //player 1
+            if (this.gameManager.validateMove(1, 0)) {
+            this.gameManager.createCross(1, 0);
+            this.gameManager.swapTurn();
+            }
+        } else {
+            //player 2
+            if (this.gameManager.validateMove(1, 0)) {
+            this.gameManager.createCircle(1, 0);
+            this.gameManager.swapTurn();
+            }
+        }
+        }
+        if (engine.input.isKeyClicked(engine.input.keys.E)) {
+        if (this.gameManager.getTurn() == 1) {
+            //player 1
+            if (this.gameManager.validateMove(2, 0)) {
+            this.gameManager.createCross(2, 0);
+            this.gameManager.swapTurn();
+            }
+        } else {
+            //player 2
+            if (this.gameManager.validateMove(2, 0)) {
+            this.gameManager.createCircle(2, 0);
+            this.gameManager.swapTurn();
+            }
+        }
+        }
+        if (engine.input.isKeyClicked(engine.input.keys.A)) {
+        if (this.gameManager.getTurn() == 1) {
+            //player 1
+            if (this.gameManager.validateMove(0, 1)) {
+            this.gameManager.createCross(0, 1);
+            this.gameManager.swapTurn();
+            }
+        } else {
+            //player 2
+            if (this.gameManager.validateMove(0, 1)) {
+            this.gameManager.createCircle(0, 1);
+            this.gameManager.swapTurn();
+            }
+        }
+        }
+        if (engine.input.isKeyClicked(engine.input.keys.S)) {
+        if (this.gameManager.getTurn() == 1) {
+            //player 1
+            if (this.gameManager.validateMove(1, 1)) {
+            this.gameManager.createCross(1, 1);
+            this.gameManager.swapTurn();
+            }
+        } else {
+            //player 2
+            if (this.gameManager.validateMove(1, 1)) {
+            this.gameManager.createCircle(1, 1);
+            this.gameManager.swapTurn();
+            }
+        }
+        }
+        if (engine.input.isKeyClicked(engine.input.keys.D)) {
+        if (this.gameManager.getTurn() == 1) {
+            //player 1
+            if (this.gameManager.validateMove(2, 1)) {
+            this.gameManager.createCross(2, 1);
+            this.gameManager.swapTurn();
+            }
+        } else {
+            //player 2
+            if (this.gameManager.validateMove(2, 1)) {
+            this.gameManager.createCircle(2, 1);
+            this.gameManager.swapTurn();
+            }
+        }
+        }
+        if (engine.input.isKeyClicked(engine.input.keys.Z)) {
+        if (this.gameManager.getTurn() == 1) {
+            //player 1
+            if (this.gameManager.validateMove(0, 2)) {
+            this.gameManager.createCross(0, 2);
+            this.gameManager.swapTurn();
+            }
+        } else {
+            //player 2
+            if (this.gameManager.validateMove(0, 2)) {
+            this.gameManager.createCircle(0, 2);
+            this.gameManager.swapTurn();
+            }
+        }
+        }
+        if (engine.input.isKeyClicked(engine.input.keys.X)) {
+        if (this.gameManager.getTurn() == 1) {
+            //player 1
+            if (this.gameManager.validateMove(1, 2)) {
+            this.gameManager.createCross(1, 2);
+            this.gameManager.swapTurn();
+            }
+        } else {
+            //player 2
+            if (this.gameManager.validateMove(1, 2)) {
+            this.gameManager.createCircle(1, 2);
+            this.gameManager.swapTurn();
+            }
+        }
+        }
+        if (engine.input.isKeyClicked(engine.input.keys.C)) {
+        if (this.gameManager.getTurn() == 1) {
+            //player 1
+            if (this.gameManager.validateMove(2, 2)) {
+            //console.log("turn before " + this.gameManager.currentTurn);
+            this.gameManager.createCross(2, 2);
+            this.gameManager.swapTurn();
+            //console.log("turn after " + this.gameManager.currentTurn);
+            }
+        } else {
+            //player 2
+            if (this.gameManager.validateMove(2, 2)) {
+            //console.log(this.gameManager.currentTurn);
+            this.gameManager.createCircle(2, 2);
+            this.gameManager.swapTurn();
+            //console.log(this.gameManager.currentTurn);
+            }
+        }
+        }
+    }
     if (engine.input.isKeyClicked(engine.input.keys.P)) {
       this.gameManager.reset();
       this.gameManager.recreateGameObjects();
@@ -275,7 +279,9 @@ class MyGame extends engine.Scene {
     if (newMove) {
       console.log("move has been made");
       console.log(this.gameManager.gameState);
+      this.socket.message.canMove = true;
       this.socket.sendInfo(this.gameManager.gameState);
+      this.socket.messagae.canMove = false;
       // this.socket.printMap();
     }
 
