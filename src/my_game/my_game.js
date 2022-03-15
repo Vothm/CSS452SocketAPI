@@ -295,6 +295,7 @@ class MyGame extends engine.Scene {
       if (value.tag == "myTag") {
         console.log("rewriting with server data");
         this.gameManager.gameState = value.data;
+        this.socket.message.canMove = value.canMove;
         //console.log(this.gameManager.gameState);
         this.gameManager.recreateGameObjects();
       }
