@@ -124,6 +124,18 @@ class MyGame extends engine.Scene {
   update() {
     //console.log("my key is " + this.socket.lastMessage.id);
 
+    for (let [key, value] of this.socket.storageMap.entries()) {
+        //console.log(value);
+        if (value.tag == "myTag") {
+          console.log("rewriting with server data");
+          this.gameManager.gameState = value.data;
+          this.socket.message.canMove = value.canMove;
+          //console.log(this.gameManager.gameState);
+          this.gameManager.recreateGameObjects();
+        }
+      }
+
+
     if (this.socket.message.canMove === true) {
       if (engine.input.isKeyClicked(engine.input.keys.Q)) {
         if (this.gameManager.getTurn() == 1) {
@@ -290,16 +302,7 @@ class MyGame extends engine.Scene {
 
     //this.socket.message.id
 
-    for (let [key, value] of this.socket.storageMap.entries()) {
-      //console.log(value);
-      if (value.tag == "myTag") {
-        console.log("rewriting with server data");
-        this.gameManager.gameState = value.data;
-        this.socket.message.canMove = value.canMove;
-        //console.log(this.gameManager.gameState);
-        this.gameManager.recreateGameObjects();
-      }
-    }
+    
 
     // if (!newMove && this.socket.message.canMove === true) {
     //   for (let [key, value] of this.socket.storageMap.entries()) {
