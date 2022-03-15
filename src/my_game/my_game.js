@@ -74,10 +74,10 @@ class MyGame extends engine.Scene {
     this.crossWinMessage.getXform().setPosition(13, 27.5);
     this.crossWinMessage.setTextHeight(5);
 
-    this.socket = new engine.SocketClient("localhost", "3000");
+    this.socket = new engine.SocketClient("server.vonce.me", "80");
     await this.socket.connectPromise();
 
-    this.socket.sendInfo(this.gameManager.gameState);
+    //this.socket.sendInfo(this.gameManager.gameState);
 
     /*
 
@@ -286,11 +286,12 @@ class MyGame extends engine.Scene {
     if (!newMove) {
       for (let [key, value] of this.socket.storageMap.entries()) {
         //console.log(value);
-        if (key != this.socket.message.id && value.tag == "myTag") {
-          //console.log(value);
+        if (key != this.socket.message.id && value.tag == "myTag" && value.data != "not real data") {
+          console.log("rewriting with server data");
           this.gameManager.gameState = value.data;
           //console.log(this.gameManager.gameState);
           this.gameManager.recreateGameObjects();
+          this.socket.sendInfo("not real data");
         }
       }
     }
