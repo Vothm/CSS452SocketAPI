@@ -288,7 +288,7 @@ class MyGame extends engine.Scene {
 
     //this.socket.message.id
 
-    if (!newMove && this.socket.message.canMove === false) {
+    if (!newMove && this.socket.message.canMove === true) {
       for (let [key, value] of this.socket.storageMap.entries()) {
         //console.log(value);
         if (
