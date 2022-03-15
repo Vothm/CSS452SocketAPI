@@ -77,6 +77,8 @@ class MyGame extends engine.Scene {
     this.socket = new engine.SocketClient("server.vonce.me", "80");
     await this.socket.connectPromise();
 
+    this.socket.sendInfo(this.gameManager.gameState);
+
     /*
 
     this.socket = new engine.Socket("server.vonce.me", "80", "Client");
