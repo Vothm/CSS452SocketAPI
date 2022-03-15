@@ -137,9 +137,11 @@ class MyGame extends engine.Scene {
 
     let updatedValue = this.socket.storageMap.get("key");
     if (updatedValue) {
-      this.gameManager.gameState = updatedValue.data;
-      this.socket.message.canMove = updatedValue.canMove;
-      this.gameManager.recreateGameObjects();
+      if (updatedValue.data !== "init") {
+        this.gameManager.gameState = updatedValue.data;
+        this.socket.message.canMove = updatedValue.canMove;
+        this.gameManager.recreateGameObjects();
+      }
     }
 
     if (this.socket.message.canMove === true) {
