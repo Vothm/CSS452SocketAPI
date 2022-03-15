@@ -1,2 +1,2 @@
 # CSS452SocketAPI
- Sample demo for network connection
+Made by Series of Sockets
